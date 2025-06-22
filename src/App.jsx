@@ -162,6 +162,9 @@ function App() {
     };
     const colors = darkMode ? darkColors : lightColors;
 
+    // Sort products alphabetically for display
+    const sortedProducts = [...products].sort((a, b) => a.localeCompare(b));
+
     return (
         <div
             style={{
@@ -315,7 +318,7 @@ function App() {
                             Products
                         </h2>
                         <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5 justify-center mb-6">
-                            {products.map((product, idx) => {
+                            {sortedProducts.map((product, idx) => {
                                 const isChecked =
                                     selectedProducts.includes(product);
                                 return (
