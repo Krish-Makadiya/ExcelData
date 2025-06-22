@@ -13,7 +13,6 @@ function App() {
     const [fileLoaded, setFileLoaded] = useState(false);
     const [darkMode, setDarkMode] = useState(false);
     const invoiceRef = useRef();
-    const fileInputRef = useRef();
 
     // Handle file upload and parse Excel
     const handleFileUpload = (e) => {
@@ -172,7 +171,7 @@ function App() {
                     boxShadow: colors.shadow,
                     borderRadius: 16,
                     width: "100%",
-                    maxWidth: 1350,
+                    maxWidth: 1500,
                     padding: "1rem 2rem 2rem 2rem",
                     margin: "0 auto",
                     border: `1px solid ${colors.border}`,
@@ -181,24 +180,16 @@ function App() {
                 {/* File input for Excel upload */}
                 <div className="mb-6 flex flex-row items-center gap-4 justify-between">
                     <div className="flex gap-2 items-center justify-between w-full">
-                        <form
-                            className="flex gap-2 items-center"
-                            onSubmit={e => {
-                                e.preventDefault();
-                                if (fileInputRef.current) fileInputRef.current.click();
-                            }}
-                        >
+                        <div className="flex gap-2 items-center">
                             <label
                                 style={{
                                     color: colors.text,
                                     fontWeight: 600,
                                     fontSize: 18,
-                                }}
-                            >
+                                }}>
                                 Upload Excel file:
                             </label>
                             <input
-                                ref={fileInputRef}
                                 type="file"
                                 accept=".xlsx, .xls"
                                 onChange={handleFileUpload}
@@ -211,7 +202,7 @@ function App() {
                                     fontSize: 16,
                                 }}
                             />
-                        </form>
+                        </div>
                         <button
                             onClick={handleToggleDarkMode}
                             style={{
@@ -324,7 +315,7 @@ function App() {
                             }}>
                             Products
                         </h2>
-                        <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 justify-center mb-6">
+                        <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5 justify-center mb-6">
                             {products.map((product, idx) => {
                                 const isChecked =
                                     selectedProducts.includes(product);
@@ -335,10 +326,10 @@ function App() {
                                             "flex items-center gap-2 cursor-pointer min-h-[50px] px-4 py-3 transition-all duration-200 font-medium text-[15px]",
                                             "rounded-sm box-border shadow-sm",
                                             isChecked
-                                                ? "bg-lime-200 border-l-4 border-lime-500 text-gray-900"
+                                                ? "bg-lime-200 border-l-5 border-lime-500 text-gray-900"
                                                 : darkMode
-                                                ? "bg-[#18181b] border-l-4 border-lime-400 text-gray-100 hover:bg-lime-100/10 hover:text-lime-200"
-                                                : "bg-white border-l-4 border-lime-500 text-gray-800 hover:bg-lime-100/60 hover:text-lime-700",
+                                                ? "bg-[#18181b] border-l-5 border-lime-400 text-gray-100 hover:bg-lime-100/10 hover:text-lime-200"
+                                                : "bg-white border-l-5 border-lime-500 text-gray-800 hover:bg-lime-100/60 hover:text-lime-700",
                                             "hover:scale-[1.010]",
                                         ].join(" ")}>
                                         <input
