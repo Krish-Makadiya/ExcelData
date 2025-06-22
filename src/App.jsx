@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import { Moon, Sun } from "lucide-react";
 
 function App() {
     const [products, setProducts] = useState([]); // Product names (headers, except first cell)
@@ -163,7 +164,7 @@ function App() {
                 color: colors.text,
                 transition: "background 0.3s, color 0.3s",
             }}
-            className="flex flex-col items-center justify-start py-2 px-1 sm:px-2">
+            className="flex flex-col items-center justify-start py-2 px-1 sm:px-2 select-none">
             <div
                 style={{
                     background: colors.card,
@@ -206,26 +207,19 @@ function App() {
                         <button
                             onClick={handleToggleDarkMode}
                             style={{
-                                background: colors.button,
-                                color: colors.buttonText,
-                                border: `1px solid ${colors.border}`,
-                                borderRadius: 8,
-                                padding: "8px 18px",
-                                fontWeight: 600,
-                                fontSize: 15,
-                                boxShadow: colors.shadow,
-                                cursor: "pointer",
-                                transition: "background 0.2s, color 0.2s",
+                                background: 'transparent',
+                                border: 'none',
+                                boxShadow: 'none',
+                                padding: 0,
+                                margin: 0,
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
                             }}
-                            onMouseOver={(e) =>
-                                (e.currentTarget.style.background =
-                                    colors.buttonHover)
-                            }
-                            onMouseOut={(e) =>
-                                (e.currentTarget.style.background =
-                                    colors.button)
-                            }>
-                            {darkMode ? "Light Mode" : "Dark Mode"}
+                            aria-label="Toggle dark mode"
+                        >
+                            {darkMode ? <Sun color="#fff" size={28} /> : <Moon color="#222" size={28} />}
                         </button>
                     </div>
                 </div>
@@ -413,7 +407,7 @@ function App() {
                                     </button>
                                 </div>
                                 {/* Professional Invoice-style template optimized for single-page PDF - Black & White or Dark */}
-                                <div className="p-4 bg-white w-4xl mx-auto">
+                                <div className="p-4 bg-white w-4xl mx-auto rounded-md"> 
                                     <div
                                         ref={invoiceRef}
                                         style={{
