@@ -106,6 +106,8 @@ function App() {
         setInputName("");
         setSelectedProducts([]);
         setResult(null);
+        // Scroll to top smoothly
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     // Get today's date and time
@@ -232,7 +234,7 @@ function App() {
                     <>
                         {/* Name input always visible, welcome message beside it */}
                         <div className="mb-8 flex flex-row items-center gap-4 justify-between">
-                            <div className="flex gap-2 items-center">
+                            <form className="flex gap-2 items-center" onSubmit={handleNameSubmit}>
                                 <label
                                     style={{
                                         color: colors.text,
@@ -259,8 +261,7 @@ function App() {
                                     required
                                 />
                                 <button
-                                    type="button"
-                                    onClick={handleNameSubmit}
+                                    type="submit"
                                     style={{
                                         background: colors.button,
                                         color: colors.buttonText,
@@ -284,7 +285,7 @@ function App() {
                                     }>
                                     Submit
                                 </button>
-                            </div>
+                            </form>
                             {name && (
                                 <span
                                     style={{
