@@ -87,8 +87,8 @@ function App() {
     // Download as PDF using jsPDF + html2canvas
     const handleDownloadPDF = async () => {
         if (!invoiceRef.current) return;
-        const canvas = await html2canvas(invoiceRef.current, { scale: 2 });
-        const imgData = canvas.toDataURL("image/png");
+        const canvas = await html2canvas(invoiceRef.current, { scale: 1 });
+        const imgData = canvas.toDataURL("image/jpeg", 0.7);
         const pdf = new jsPDF({
             orientation: "portrait",
             unit: "px",
@@ -96,12 +96,16 @@ function App() {
         });
         const pageWidth = pdf.internal.pageSize.getWidth();
         const pageHeight = pdf.internal.pageSize.getHeight();
-        const imgWidth = pageWidth - 40; // 20px margin each side
+        const imgWidth = pageWidth - 40;
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
-        pdf.addImage(imgData, "PNG", 20, 20, imgWidth, imgHeight, undefined, 'FAST');
-
+        pdf.addImage(imgData, "JPEG", 20, 20, imgWidth, imgHeight, undefined, 'FAST');
         const filename = inputName.replace(" ", "_");
         pdf.save(`${filename}.pdf`);
+        // Reset all relevant state after download
+        setName("");
+        setInputName("");
+        setSelectedProducts([]);
+        setResult(null);
     };
 
     // Get today's date and time
