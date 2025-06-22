@@ -171,7 +171,7 @@ function App() {
                     boxShadow: colors.shadow,
                     borderRadius: 16,
                     width: "100%",
-                    maxWidth: 1500,
+                    maxWidth: 1400,
                     padding: "1rem 2rem 2rem 2rem",
                     margin: "0 auto",
                     border: `1px solid ${colors.border}`,
