@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
-import { Moon, Sun } from "lucide-react";
+import { Moon, RefreshCw, Sun } from "lucide-react";
 
 function App() {
     const [products, setProducts] = useState([]); // Product names (headers, except first cell)
@@ -87,18 +87,31 @@ function App() {
     // Download as PDF using jsPDF + html2canvas
     const handleDownloadPDF = async () => {
         if (!invoiceRef.current) return;
+        console.log("downloading");
         const canvas = await html2canvas(invoiceRef.current, { scale: 2 });
+        console.log("downloading");
         const imgData = canvas.toDataURL("image/jpeg", 0.7);
+        console.log("downloading");
         const pdf = new jsPDF({
             orientation: "portrait",
             unit: "px",
             format: "a4",
         });
+        console.log("downloading");
         const pageWidth = pdf.internal.pageSize.getWidth();
         const pageHeight = pdf.internal.pageSize.getHeight();
         const imgWidth = pageWidth - 40;
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
-        pdf.addImage(imgData, "JPEG", 20, 20, imgWidth, imgHeight, undefined, 'FAST');
+        pdf.addImage(
+            imgData,
+            "JPEG",
+            20,
+            20,
+            imgWidth,
+            imgHeight,
+            undefined,
+            "FAST"
+        );
         const filename = inputName.replace(" ", "_");
         pdf.save(`${filename}.pdf`);
         // Reset all relevant state after download
@@ -107,7 +120,7 @@ function App() {
         setSelectedProducts([]);
         setResult(null);
         // Scroll to top smoothly
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
     // Get today's date and time
@@ -213,23 +226,44 @@ function App() {
                                 }}
                             />
                         </div>
-                        <button
-                            onClick={handleToggleDarkMode}
-                            style={{
-                                background: 'transparent',
-                                border: 'none',
-                                boxShadow: 'none',
-                                padding: 0,
-                                margin: 0,
-                                cursor: 'pointer',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                            }}
-                            aria-label="Toggle dark mode"
-                        >
-                            {darkMode ? <Sun color="#fff" size={28} /> : <Moon color="#222" size={28} />}
-                        </button>
+                        <div className="flex justify-end mb-4 gap-4">
+                            <button
+                                onClick={() => window.location.reload()}
+                                style={{
+                                    background: "transparent",
+                                    border: "none",
+                                    boxShadow: "none",
+                                    padding: 0,
+                                    margin: 0,
+                                    cursor: "pointer",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                }}
+                                aria-label="Refresh app">
+                                <RefreshCw size={26} />
+                            </button>
+                            <button
+                                onClick={handleToggleDarkMode}
+                                style={{
+                                    background: "transparent",
+                                    border: "none",
+                                    boxShadow: "none",
+                                    padding: 0,
+                                    margin: 0,
+                                    cursor: "pointer",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                }}
+                                aria-label="Toggle dark mode">
+                                {darkMode ? (
+                                    <Sun size={26} />
+                                ) : (
+                                    <Moon size={26} />
+                                )}
+                            </button>
+                        </div>
                     </div>
                 </div>
                 {/* Only show the rest of the UI if a file is loaded */}
@@ -237,7 +271,9 @@ function App() {
                     <>
                         {/* Name input always visible, welcome message beside it */}
                         <div className="mb-8 flex flex-row items-center gap-4 justify-between">
-                            <form className="flex gap-2 items-center" onSubmit={handleNameSubmit}>
+                            <form
+                                className="flex gap-2 items-center"
+                                onSubmit={handleNameSubmit}>
                                 <label
                                     style={{
                                         color: colors.text,
@@ -415,7 +451,7 @@ function App() {
                                     </button>
                                 </div>
                                 {/* Professional Invoice-style template optimized for single-page PDF - Black & White or Dark */}
-                                <div className="p-4 bg-white w-4xl mx-auto rounded-md"> 
+                                <div className="p-4 bg-white w-4xl mx-auto rounded-md">
                                     <div
                                         ref={invoiceRef}
                                         style={{
@@ -423,8 +459,8 @@ function App() {
                                             minHeight: "306mm", // A4 height
                                             maxHeight: "306mm",
                                             margin: "0 auto",
-                                            backgroundColor: "#ffffff",
-                                            color: "#000000",
+                                            backgroundColor: "#fff",
+                                            color: "#222",
                                             fontFamily: "Arial, sans-serif",
                                             fontSize: "11pt",
                                             lineHeight: "1.2",
@@ -511,8 +547,8 @@ function App() {
                                             {/* Yes Ingredients Column */}
                                             <div
                                                 style={{
-                                                    flex: "1",
-                                                    minWidth: "0",
+                                                    flex: 1,
+                                                    minWidth: 0,
                                                 }}>
                                                 <div
                                                     style={{
@@ -526,76 +562,47 @@ function App() {
                                                     }}>
                                                     Yes Ingredients
                                                 </div>
-
-                                                <div
+                                                <ul
                                                     style={{
-                                                        display: "flex",
-                                                        gap: "4mm",
-                                                        height: "180mm",
-                                                        overflow: "hidden",
+                                                        marginLeft: 20,
+                                                        padding: 0,
+                                                        listStyle: "none",
                                                     }}>
-                                                    {yesColumns.map(
-                                                        (column, colIdx) => (
-                                                            <div
-                                                                key={colIdx}
-                                                                style={{
-                                                                    flex: 1,
-                                                                    overflow:
-                                                                        "hidden",
-                                                                }}>
-                                                                {column.length >
-                                                                0
-                                                                    ? column.map(
-                                                                          (
-                                                                              ingredient,
-                                                                              idx
-                                                                          ) => (
-                                                                              <div
-                                                                                  key={
-                                                                                      idx
-                                                                                  }
-                                                                                  style={{
-                                                                                      padding:
-                                                                                          "3px 0",
-                                                                                      fontSize:
-                                                                                          "11pt",
-                                                                                      wordBreak:
-                                                                                          "break-word",
-                                                                                      color: "#000000",
-                                                                                  }}>
-                                                                                  {
-                                                                                      ingredient
-                                                                                  }
-                                                                              </div>
-                                                                          )
-                                                                      )
-                                                                    : colIdx ===
-                                                                          0 && (
-                                                                          <div
-                                                                              style={{
-                                                                                  fontStyle:
-                                                                                      "italic",
-                                                                                  color: "#666666",
-                                                                                  textAlign:
-                                                                                      "center",
-                                                                                  padding:
-                                                                                      "15mm 0",
-                                                                                  fontSize:
-                                                                                      "9pt",
-                                                                              }}>
-                                                                              No
-                                                                              approved
-                                                                              ingredients
-                                                                          </div>
-                                                                      )}
-                                                            </div>
+                                                    {result.yes.length > 0 ? (
+                                                        result.yes.map(
+                                                            (
+                                                                ingredient,
+                                                                idx
+                                                            ) => (
+                                                                <li
+                                                                    key={idx}
+                                                                    style={{
+                                                                        marginBottom: 8,
+                                                                        color: "#222",
+                                                                        fontSize: 15,
+                                                                    }}>
+                                                                    {ingredient}
+                                                                </li>
+                                                            )
                                                         )
+                                                    ) : (
+                                                        <li
+                                                            style={{
+                                                                color: "#888",
+                                                            }}>
+                                                            No approved
+                                                            ingredients
+                                                        </li>
                                                     )}
-                                                </div>
+                                                </ul>
                                             </div>
 
                                             {/* No Ingredients Column */}
-                                            <div className="flex-1">
+                                            <div
+                                                style={{
+                                                    flex: 1,
+                                                    minWidth: 0,
+                                                }}>
                                                 <div
                                                     style={{
                                                         fontWeight: 600,
@@ -618,6 +625,9 @@ function App() {
                                                             key={col}
                                                             style={{
                                                                 marginLeft: 20,
+                                                                padding: 0,
+                                                                listStyle:
+                                                                    "none",
                                                                 flex: 1,
                                                             }}>
                                                             {noColumns[col]
@@ -629,23 +639,19 @@ function App() {
                                                                           ingredient,
                                                                           idx
                                                                       ) => (
-                                                                          <div
+                                                                          <li
                                                                               key={
                                                                                   idx
                                                                               }
                                                                               style={{
-                                                                                  padding:
-                                                                                      "3px 0",
-                                                                                  fontSize:
-                                                                                      "11pt",
-                                                                                  wordBreak:
-                                                                                      "break-word",
-                                                                                  color: "#000000",
+                                                                                  marginBottom: 8,
+                                                                                  color: "#222",
+                                                                                  fontSize: 15,
                                                                               }}>
                                                                               {
                                                                                   ingredient
                                                                               }
-                                                                          </div>
+                                                                          </li>
                                                                       )
                                                                   )
                                                                 : col === 0 &&
