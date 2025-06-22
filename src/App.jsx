@@ -87,7 +87,7 @@ function App() {
     // Download as PDF using jsPDF + html2canvas
     const handleDownloadPDF = async () => {
         if (!invoiceRef.current) return;
-        const canvas = await html2canvas(invoiceRef.current, { scale: 1 });
+        const canvas = await html2canvas(invoiceRef.current, { scale: 2 });
         const imgData = canvas.toDataURL("image/jpeg", 0.7);
         const pdf = new jsPDF({
             orientation: "portrait",
