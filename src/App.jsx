@@ -11,6 +11,8 @@ function App() {
     const [result, setResult] = useState(null); // { yes: [...], no: [...] }
     const [name, setName] = useState("");
     const [inputName, setInputName] = useState("");
+    const [inputASN, setInputASN] = useState("");
+    const [inputDIS, setInputDIS] = useState("");
     const [fileLoaded, setFileLoaded] = useState(false);
     const [darkMode, setDarkMode] = useState(false);
     const invoiceRef = useRef();
@@ -280,13 +282,63 @@ function App() {
                                         fontWeight: 600,
                                         fontSize: 18,
                                     }}>
-                                    Enter your name:
+                                    Name:
                                 </label>
                                 <input
                                     type="text"
                                     value={inputName}
                                     onChange={(e) =>
                                         setInputName(e.target.value)
+                                    }
+                                    style={{
+                                        background: colors.input,
+                                        color: colors.inputText,
+                                        border: `1px solid ${colors.inputBorder}`,
+                                        borderRadius: 6,
+                                        padding: "8px 14px",
+                                        fontSize: 16,
+                                    }}
+                                    placeholder="Your name"
+                                    required
+                                />
+                                <label
+                                    style={{
+                                        color: colors.text,
+                                        fontWeight: 600,
+                                        fontSize: 18,
+                                    }}>
+                                    DIS:
+                                </label>
+                                <input
+                                    type="text"
+                                    value={inputDIS}
+                                    onChange={(e) =>
+                                        setInputDIS(e.target.value)
+                                    }
+                                    style={{
+                                        background: colors.input,
+                                        color: colors.inputText,
+                                        border: `1px solid ${colors.inputBorder}`,
+                                        borderRadius: 6,
+                                        padding: "8px 14px",
+                                        fontSize: 16,
+                                    }}
+                                    placeholder="Your name"
+                                    required
+                                />
+                                <label
+                                    style={{
+                                        color: colors.text,
+                                        fontWeight: 600,
+                                        fontSize: 18,
+                                    }}>
+                                    ASN:
+                                </label>
+                                <input
+                                    type="text"
+                                    value={inputASN}
+                                    onChange={(e) =>
+                                        setInputASN(e.target.value)
                                     }
                                     style={{
                                         background: colors.input,
@@ -475,11 +527,13 @@ function App() {
                                             style={{
                                                 display: "flex",
                                                 justifyContent: "space-between",
-                                                alignItems: "center",
+
                                                 marginBottom: "3mm",
                                                 paddingBottom: "3mm",
                                                 borderBottom:
                                                     "1px solid #000000",
+                                                display: "flex",
+                                                flexDirection: "column",
                                             }}>
                                             <div
                                                 style={{
@@ -489,50 +543,71 @@ function App() {
                                                 }}>
                                                 Name: {name || inputName}
                                             </div>
-                                            <div style={{ textAlign: "right" }}>
-                                                <div
-                                                    style={{
-                                                        fontSize: "12pt",
-                                                        fontWeight: "bold",
-                                                        marginBottom: "1mm",
-                                                        color: "#000000",
-                                                    }}>
-                                                    Date: {dateStr}
-                                                </div>
-                                                <div
-                                                    style={{
-                                                        fontSize: "10pt",
-                                                        color: "#000000",
-                                                    }}>
-                                                    Time: {timeStr}
-                                                </div>
+                                            <div
+                                                style={{
+                                                    fontSize: "12pt",
+                                                    fontWeight: "bold",
+                                                    marginBottom: "1mm",
+                                                    color: "#000000",
+                                                }}>
+                                                Date: {dateStr}
                                             </div>
+                                            <div
+                                                style={{
+                                                    fontSize: "10pt",
+                                                    color: "#000000",
+                                                }}>
+                                                Time: {timeStr}
+                                            </div>
+                                            {/* < style={{ textAlign: "right" }}> */}
                                         </div>
 
                                         {/* Selected Products Section - Compact */}
                                         <div
                                             style={{
-                                                marginBottom: "3mm",
-                                                paddingBottom: "3mm",
-                                                borderBottom:
-                                                    "1px solid #000000",
+                                                // width: "100vw",
+                                                // borderBottom:
+                                                //     "1px solid #000000",
                                             }}>
                                             <div
                                                 style={{
-                                                    fontSize: "11pt",
-                                                    fontWeight: "bold",
-                                                    marginBottom: "1mm",
-                                                    color: "#000000",
+                                                    marginBottom: "3mm",
+                                                    paddingBottom: "3mm",
+                                                    borderBottom:
+                                                    "1px solid #000000",
+                                                    // width: "400px",
                                                 }}>
-                                                Selected Products:
-                                            </div>
-                                            <div
-                                                style={{
-                                                    fontSize: "10pt",
-                                                    lineHeight: "1.3",
-                                                    color: "#000000",
-                                                }}>
-                                                {selectedProducts.join(", ")}
+                                                <div
+                                                    style={{
+                                                        fontSize: "11pt",
+                                                        fontWeight: "bold",
+                                                        marginBottom: "1mm",
+                                                        
+                                                        color: "#000000",
+                                                    }}>
+                                                    {inputDIS}
+                                                    {selectedProducts.length >
+                                                        0 && (
+                                                        <span>
+                                                            {" "}
+                                                            (Total:{" "}
+                                                            {
+                                                                selectedProducts.length
+                                                            }
+                                                            )
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                <div
+                                                    style={{
+                                                        fontSize: "10pt",
+                                                        lineHeight: "1.3",
+                                                        color: "#000000",
+                                                    }}>
+                                                    {selectedProducts.join(
+                                                        ", "
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
 
@@ -560,7 +635,15 @@ function App() {
                                                         paddingBottom: 6,
                                                         color: "#222",
                                                     }}>
-                                                    Yes Ingredients
+                                                    Included {inputASN}
+                                                    <span
+                                                        style={{
+                                                            fontWeight: 500,
+                                                            marginLeft: 8,
+                                                        }}>
+                                                        (Total:{" "}
+                                                        {result.yes.length})
+                                                    </span>
                                                 </div>
                                                 <ul
                                                     style={{
@@ -597,6 +680,9 @@ function App() {
                                                 </ul>
                                             </div>
 
+                                            <div style={{ breakAfter: "page", pageBreakAfter: "always" }} />
+
+
                                             {/* No Ingredients Column */}
                                             <div
                                                 style={{
@@ -613,65 +699,60 @@ function App() {
                                                         paddingBottom: 6,
                                                         color: "#222",
                                                     }}>
-                                                    No Ingredients
+                                                    Excluded {inputASN}
                                                 </div>
-                                                <div
+                                                <ul
                                                     style={{
-                                                        display: "flex",
-                                                        gap: 16,
+                                                        marginLeft: 20,
+                                                        padding: 0,
+                                                        listStyle: "none",
                                                     }}>
-                                                    {[0, 1].map((col) => (
-                                                        <ul
-                                                            key={col}
+                                                    {result.no.length > 0 ? (
+                                                        result.no.map((ingredientName, idx) => {
+                                                            // Find the ingredient object
+                                                            const ingredientObj = ingredients.find(i => i.name === ingredientName);
+                                                            // Find which selected products are 'No'
+                                                            const noProducts = selectedProducts.filter(
+                                                                product => ingredientObj && String(ingredientObj.values[product]).trim().toLowerCase() === 'no'
+                                                            );
+                                                            return (
+                                                                <li
+                                                                    key={idx}
+                                                                    style={{
+                                                                        marginBottom: 12,
+                                                                        color: "#222",
+                                                                        fontSize: 15,
+                                                                    }}>
+                                                                    <div
+                                                                        style={{
+                                                                            fontWeight: 500,
+                                                                        }}>
+                                                                        {ingredientName}
+                                                                    </div>
+                                                                    <div
+                                                                        style={{
+                                                                            fontSize: 13,
+                                                                            color: "#b91c1c",
+                                                                            marginLeft: 8,
+                                                                        }}>
+                                                                        No for: {noProducts.join(', ')}
+                                                                    </div>
+                                                                </li>
+                                                            );
+                                                        })
+                                                    ) : (
+                                                        <li
                                                             style={{
-                                                                marginLeft: 20,
-                                                                padding: 0,
-                                                                listStyle:
-                                                                    "none",
-                                                                flex: 1,
+                                                                color: "#888",
                                                             }}>
-                                                            {noColumns[col]
-                                                                .length > 0
-                                                                ? noColumns[
-                                                                      col
-                                                                  ].map(
-                                                                      (
-                                                                          ingredient,
-                                                                          idx
-                                                                      ) => (
-                                                                          <li
-                                                                              key={
-                                                                                  idx
-                                                                              }
-                                                                              style={{
-                                                                                  marginBottom: 8,
-                                                                                  color: "#222",
-                                                                                  fontSize: 15,
-                                                                              }}>
-                                                                              {
-                                                                                  ingredient
-                                                                              }
-                                                                          </li>
-                                                                      )
-                                                                  )
-                                                                : col === 0 &&
-                                                                  result.no
-                                                                      .length ===
-                                                                      0 && (
-                                                                      <li
-                                                                          style={{
-                                                                              color: "#888",
-                                                                          }}>
-                                                                          No
-                                                                          non-approved
-                                                                          ingredients
-                                                                      </li>
-                                                                  )}
-                                                        </ul>
-                                                    ))}
-                                                </div>
+                                                            No non-approved
+                                                            ingredients
+                                                        </li>
+                                                    )}
+                                                </ul>
                                             </div>
                                         </div>
+                                        <div style={{ breakAfter: "page", pageBreakAfter: "always" }} />
                                     </div>
                                 </div>
                             </>
