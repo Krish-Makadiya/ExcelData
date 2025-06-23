@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import * as XLSX from "xlsx";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
+import html2pdf from "html2pdf.js";
 import { Moon, RefreshCw, Sun } from "lucide-react";
 
 function App() {
@@ -86,36 +85,19 @@ function App() {
         setName(inputName.trim());
     };
 
-    // Download as PDF using jsPDF + html2canvas
+    // Download as PDF using html2pdf.js
     const handleDownloadPDF = async () => {
         if (!invoiceRef.current) return;
-        console.log("downloading");
-        const canvas = await html2canvas(invoiceRef.current, { scale: 2 });
-        console.log("downloading");
-        const imgData = canvas.toDataURL("image/jpeg", 0.7);
-        console.log("downloading");
-        const pdf = new jsPDF({
-            orientation: "portrait",
-            unit: "px",
-            format: "a4",
-        });
-        console.log("downloading");
-        const pageWidth = pdf.internal.pageSize.getWidth();
-        const pageHeight = pdf.internal.pageSize.getHeight();
-        const imgWidth = pageWidth - 40;
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
-        pdf.addImage(
-            imgData,
-            "JPEG",
-            20,
-            20,
-            imgWidth,
-            imgHeight,
-            undefined,
-            "FAST"
-        );
-        const filename = inputName.replace(" ", "_");
-        pdf.save(`${filename}.pdf`);
+        const filename = inputName.replace(/\s+/g, "_") || "document";
+        // html2pdf options
+        const opt = {
+            margin: 0,
+            filename: `${filename}.pdf`,
+            image: { type: "jpeg", quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+        };
+        await html2pdf().set(opt).from(invoiceRef.current).save();
         // Reset all relevant state after download
         setName("");
         setInputName("");
@@ -212,7 +194,7 @@ function App() {
                                     fontWeight: 600,
                                     fontSize: 18,
                                 }}>
-                                Upload Excel file:
+                                Excel file:
                             </label>
                             <input
                                 type="file"
@@ -323,7 +305,7 @@ function App() {
                                         padding: "8px 14px",
                                         fontSize: 16,
                                     }}
-                                    placeholder="Your name"
+                                    placeholder="Your DIS"
                                     required
                                 />
                                 <label
@@ -348,7 +330,7 @@ function App() {
                                         padding: "8px 14px",
                                         fontSize: 16,
                                     }}
-                                    placeholder="Your name"
+                                    placeholder="Your ASN"
                                     required
                                 />
                                 <button
@@ -507,9 +489,9 @@ function App() {
                                     <div
                                         ref={invoiceRef}
                                         style={{
-                                            width: "210mm", // A4 width
-                                            minHeight: "306mm", // A4 height
-                                            maxHeight: "306mm",
+                                            width: "210mm",
+                                            minHeight: "297mm",
+                                            maxWidth: "210mm",
                                             margin: "0 auto",
                                             backgroundColor: "#fff",
                                             color: "#222",
@@ -519,112 +501,89 @@ function App() {
                                             boxSizing: "border-box",
                                             overflow: "hidden",
                                             position: "relative",
-                                            pageBreakInside: "avoid",
                                             display: "block",
+                                            padding: "5mm",
                                         }}>
-                                        {/* Header Section - Compact */}
+                                        {/* Page 1: Header, Selected Products, Included Ingredients */}
                                         <div
                                             style={{
-                                                display: "flex",
-                                                justifyContent: "space-between",
-
-                                                marginBottom: "3mm",
-                                                paddingBottom: "3mm",
-                                                borderBottom:
-                                                    "1px solid #000000",
-                                                display: "flex",
-                                                flexDirection: "column",
+                                                pageBreakAfter: "always",
                                             }}>
+                                            {/* Header Section */}
                                             <div
                                                 style={{
-                                                    fontSize: "16pt",
-                                                    fontWeight: "bold",
-                                                    color: "#000000",
-                                                }}>
-                                                Name: {name || inputName}
-                                            </div>
-                                            <div
-                                                style={{
-                                                    fontSize: "12pt",
-                                                    fontWeight: "bold",
-                                                    marginBottom: "1mm",
-                                                    color: "#000000",
-                                                }}>
-                                                Date: {dateStr}
-                                            </div>
-                                            <div
-                                                style={{
-                                                    fontSize: "10pt",
-                                                    color: "#000000",
-                                                }}>
-                                                Time: {timeStr}
-                                            </div>
-                                            {/* < style={{ textAlign: "right" }}> */}
-                                        </div>
-
-                                        {/* Selected Products Section - Compact */}
-                                        <div
-                                            style={{
-                                                // width: "100vw",
-                                                // borderBottom:
-                                                //     "1px solid #000000",
-                                            }}>
-                                            <div
-                                                style={{
-                                                    marginBottom: "3mm",
-                                                    paddingBottom: "3mm",
-                                                    borderBottom:
-                                                    "1px solid #000000",
-                                                    // width: "400px",
+                                                    marginBottom: "8mm",
+                                                    display: "flex",
+                                                    flexDirection: "column",
                                                 }}>
                                                 <div
                                                     style={{
-                                                        fontSize: "11pt",
+                                                        fontSize: "16pt",
                                                         fontWeight: "bold",
-                                                        marginBottom: "1mm",
-                                                        
                                                         color: "#000000",
                                                     }}>
-                                                    {inputDIS}
-                                                    {selectedProducts.length >
-                                                        0 && (
-                                                        <span>
-                                                            {" "}
-                                                            (Total:{" "}
-                                                            {
-                                                                selectedProducts.length
-                                                            }
-                                                            )
-                                                        </span>
-                                                    )}
+                                                    Name: {name || inputName}
+                                                </div>
+                                                <div
+                                                    style={{
+                                                        fontSize: "12pt",
+                                                        fontWeight: "bold",
+                                                        marginBottom: "1mm",
+                                                        color: "#000000",
+                                                    }}>
+                                                    Date: {dateStr}
                                                 </div>
                                                 <div
                                                     style={{
                                                         fontSize: "10pt",
-                                                        lineHeight: "1.3",
                                                         color: "#000000",
                                                     }}>
-                                                    {selectedProducts.join(
-                                                        ", "
-                                                    )}
+                                                    Time: {timeStr}
                                                 </div>
                                             </div>
-                                        </div>
-
-                                        {/* Content Section - More compact */}
-                                        <div
-                                            style={{
-                                                display: "flex",
-                                                gap: "10mm",
-                                                height: "200mm", // Fixed height for content area
-                                                marginTop: "5mm",
-                                            }}>
-                                            {/* Yes Ingredients Column */}
-                                            <div
-                                                style={{
-                                                    flex: 1,
-                                                    minWidth: 0,
-                                                }}>
+                                            {/* Selected Products Section */}
+                                            <div>
+                                                <div
+                                                    style={{
+                                                        marginBottom: "3mm",
+                                                        paddingBottom: "3mm",
+                                                        borderBottom:
+                                                            "1px solid #000000",
+                                                    }}>
+                                                    <div
+                                                        style={{
+                                                            fontSize: "11pt",
+                                                            fontWeight: "bold",
+                                                            marginBottom: "1mm",
+                                                            color: "#000000",
+                                                        }}>
+                                                        {inputDIS}
+                                                        {selectedProducts.length >
+                                                            0 && (
+                                                            <span>
+                                                                {" "}
+                                                                (Total:{" "}
+                                                                {
+                                                                    selectedProducts.length
+                                                                }
+                                                                )
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                    <div
+                                                        style={{
+                                                            fontSize: "10pt",
+                                                            lineHeight: "1.3",
+                                                            color: "#000000",
+                                                        }}>
+                                                        {selectedProducts.join(
+                                                            ", "
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {/* Included Ingredients Section */}
+                                            <div style={{ marginTop: "5mm" }}>
                                                 <div
                                                     style={{
                                                         fontWeight: 600,
@@ -679,42 +638,54 @@ function App() {
                                                     )}
                                                 </ul>
                                             </div>
-
-                                            <div style={{ breakAfter: "page", pageBreakAfter: "always" }} />
-
-
-                                            {/* No Ingredients Column */}
+                                        </div>
+                                        {/* Page 2: Excluded Ingredients Section */}
+                                        <div>
                                             <div
                                                 style={{
-                                                    flex: 1,
-                                                    minWidth: 0,
+                                                    fontWeight: 600,
+                                                    fontSize: "1rem",
+                                                    marginBottom: 8,
+                                                    marginTop: 10,
+                                                    borderBottom:
+                                                        "1px solid #bbb",
+                                                    paddingBottom: 6,
+                                                    color: "#222",
                                                 }}>
-                                                <div
-                                                    style={{
-                                                        fontWeight: 600,
-                                                        fontSize: "1rem",
-                                                        marginBottom: 8,
-                                                        borderBottom:
-                                                            "1px solid #bbb",
-                                                        paddingBottom: 6,
-                                                        color: "#222",
-                                                    }}>
-                                                    Excluded {inputASN}
-                                                </div>
-                                                <ul
-                                                    style={{
-                                                        marginLeft: 20,
-                                                        padding: 0,
-                                                        listStyle: "none",
-                                                    }}>
-                                                    {result.no.length > 0 ? (
-                                                        result.no.map((ingredientName, idx) => {
-                                                            // Find the ingredient object
-                                                            const ingredientObj = ingredients.find(i => i.name === ingredientName);
-                                                            // Find which selected products are 'No'
-                                                            const noProducts = selectedProducts.filter(
-                                                                product => ingredientObj && String(ingredientObj.values[product]).trim().toLowerCase() === 'no'
-                                                            );
+                                                Excluded {inputASN}
+                                            </div>
+                                            <ul
+                                                style={{
+                                                    marginLeft: 20,
+                                                    padding: 0,
+                                                    listStyle: "none",
+                                                }}>
+                                                {result.no.length > 0 ? (
+                                                    result.no.map(
+                                                        (
+                                                            ingredientName,
+                                                            idx
+                                                        ) => {
+                                                            const ingredientObj =
+                                                                ingredients.find(
+                                                                    (i) =>
+                                                                        i.name ===
+                                                                        ingredientName
+                                                                );
+                                                            const noProducts =
+                                                                selectedProducts.filter(
+                                                                    (product) =>
+                                                                        ingredientObj &&
+                                                                        String(
+                                                                            ingredientObj
+                                                                                .values[
+                                                                                product
+                                                                            ]
+                                                                        )
+                                                                            .trim()
+                                                                            .toLowerCase() ===
+                                                                            "no"
+                                                                );
                                                             return (
                                                                 <li
                                                                     key={idx}
@@ -727,7 +698,9 @@ function App() {
                                                                         style={{
                                                                             fontWeight: 500,
                                                                         }}>
-                                                                        {ingredientName}
+                                                                        {
+                                                                            ingredientName
+                                                                        }
                                                                     </div>
                                                                     <div
                                                                         style={{
@@ -735,24 +708,26 @@ function App() {
                                                                             color: "#b91c1c",
                                                                             marginLeft: 8,
                                                                         }}>
-                                                                        No for: {noProducts.join(', ')}
+                                                                        No for:{" "}
+                                                                        {noProducts.join(
+                                                                            ", "
+                                                                        )}
                                                                     </div>
                                                                 </li>
                                                             );
-                                                        })
-                                                    ) : (
-                                                        <li
-                                                            style={{
-                                                                color: "#888",
-                                                            }}>
-                                                            No non-approved
-                                                            ingredients
-                                                        </li>
-                                                    )}
-                                                </ul>
-                                            </div>
+                                                        }
+                                                    )
+                                                ) : (
+                                                    <li
+                                                        style={{
+                                                            color: "#888",
+                                                        }}>
+                                                        No non-approved
+                                                        ingredients
+                                                    </li>
+                                                )}
+                                            </ul>
                                         </div>
-                                        <div style={{ breakAfter: "page", pageBreakAfter: "always" }} />
                                     </div>
                                 </div>
                             </>
