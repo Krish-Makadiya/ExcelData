@@ -208,6 +208,7 @@ function App() {
                                     padding: "8px 14px",
                                     fontSize: 16,
                                 }}
+                                disabled
                             />
                         </div>
                         <div className="flex justify-end mb-4 gap-4">
